@@ -1,5 +1,6 @@
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { stepperValidation } from "./validations/stepper-validation";
+import classNames from "classnames";
 
 function App() {
   const steps = [
@@ -38,6 +39,9 @@ function App() {
           const nextHandle = (e) => {
             setFieldValue("step", values.step + 1);
           };
+          const stepHandle = (step) => {
+            setFieldValue("step", step);
+          };
 
           return (
             <Form className="w-[500px] py-5 mx-auto">
@@ -47,15 +51,43 @@ function App() {
                 .Adim  } */}
               <header className="grid grid-cols-4 gap-x-2.5 border border-zinc-400 rounded-md mb-4">
                 {steps.map((step) => (
-                  <button className="flex flex-col items-center justify-center py-2.5">
-                    {" "}
-                    <div className=" w-10 h-10 rounded-full flex items-center justify-center bg-zinc-100">
-                      {step.step}
+                  <button
+                    key={step.step}
+                    type="button"
+                    onClick={() => stepHandle(step.step)}
+                    disabled={values.step < step.step}
+                    className="flex flex-col items-center justify-center py-2.5"
+                  >
+                    <div
+                      className={classNames(
+                        " w-10 h-10 mb-2.5 rounded-full flex items-center justify-center ",
+                        {
+                          "bg-blue-100 text-blue-600":
+                            values.step === step.step,
+                          "bg-green-100 text-green-600":
+                            values.step > step.step,
+                          "bg-zinc-100 text-zinc-700":
+                            values.step !== step.step,
+                        }
+                      )}
+                    >
+                      {values.step > step.step ? "✅" : step.step}
                     </div>
-                    <div className="text-sm text-zinc-500">{step.title}</div>
+
+                    <div
+                      className={classNames("text-sm ", {
+                        " text-blue-600": values.step === step.step,
+
+                        " text-green-600": values.step > step.step,
+                        " text-zinc-700": values.step !== step.step,
+                      })}
+                    >
+                      {step.title}
+                    </div>
                   </button>
                 ))}
               </header>
+
               <header className="mb-4">
                 <h3 className="text-lg font-medium text-zinc-700">
                   Adim {values.step}
